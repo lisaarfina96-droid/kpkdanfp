@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Mencari KPK dan FPB</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter & Fredoka for playful headers) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+        }
+        .font-playful {
+            font-family: 'Fredoka', sans-serif;
+        }
+        /* Custom map path dashed styling */
+        .map-line {
+            background-image: linear-gradient(90deg, #e2e8f0 50%, transparent 50%);
+            background-size: 20px 1px;
+        }
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Navigation Bar -->
+    <header class="glass sticky top-0 z-50 px-4 py-3 border-b border-slate-700 shadow-lg">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-500 text-slate-900 p-2 rounded-xl shadow-md flex items-center justify-center">
+                    <i class="fa-solid fa-compass fa-spin text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-playful text-lg md:text-xl font-bold tracking-wide text-amber-400">Arkeolog Matematika</h1>
+                    <p class="text-xs text-slate-400 font-semibold hidden sm:block">KPK & FPB • Kelas V SD</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Helper Simulator Button -->
+                <button onclick="toggleVennHelper()" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3 py-2 rounded-lg text-xs md:text-sm transition-all shadow-md">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>Alat Bantu Venn</span>
+                </button>
+                
+                <!-- Sound control -->
+                <button onclick="toggleSound()" id="soundBtn" class="bg-slate-700 hover:bg-slate-600 text-slate-300 p-2 rounded-lg text-sm transition-all">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl w-full mx-auto p-4 flex-grow flex flex-col justify-center">
+
+        <!-- START SCREEN -->
+        <section id="startScreen" class="py-6 md:py-12 flex flex-col items-center">
+            <div class="w-full max-w-2xl text-center space-y-6">
+                <!-- Mascot & Splash Graphics -->
+                <div class="relative inline-block mb-4">
+                    <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 blur opacity-70 animate-pulse"></div>
+                    <div class="relative bg-slate-800 p-6 rounded-full w-32 h-32 md:w-40 md:h-40 flex items-center justify-center border-4 border-amber-400 mx-auto">
+                        <i class="fa-solid fa-map-marked-alt text-5xl md:text-6xl text-amber-400 animate-bounce"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <span class="bg-amber-500/20 text-amber-300 font-semibold text-xs md:text-sm uppercase tracking-widest px-3 py-1 rounded-full border border-amber-500/30">Fase C - Kelas V SD Semester 1</span>
+                    <h2 class="font-playful text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 drop-shadow-md">
+                        Petualangan Mencari KPK dan FPB
+                    </h2>
+                    <p class="text-sm md:text-base text-slate-300 max-w-lg mx-auto">
+                        Bantulah sang Arkeolog Matematika memecahkan misteri prasasti kuno dan membuka peti harta karun dengan keahlian Kelipatan dan Faktor!
+                    </p>
+                </div>
+
+                <!-- Input Player Name -->
+                <div class="bg-slate-800/80 border border-slate-700 p-6 rounded-2xl shadow-xl max-w-md mx-auto space-y-4">
+                    <label class="block text-sm font-bold text-slate-300 text-left mb-1" for="playerName">
+                        <i class="fa-solid fa-user-astronaut mr-1 text-amber-400"></i> Masukkan Nama Penjelajah:
+                    </label>
+                    <input type="text" id="playerName" placeholder="Nama petualangmu..." 
+                           class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400 transition" />
+                    
+                    <button onclick="startGame()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-playful font-extrabold text-lg md:text-xl py-3 px-6 rounded-xl shadow-lg hover:shadow-amber-500/20 transform hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2">
+                        <span>Mulai Petualangan</span>
+                        <i class="fa-solid fa-play"></i>
+                    </button>
+                </div>
+
+                <!-- Learning Objectives -->
+                <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50 max-w-xl mx-auto text-left text-xs md:text-sm text-slate-400 space-y-2">
+                    <p class="font-semibold text-slate-300"><i class="fa-solid fa-bullseye mr-1 text-red-400"></i> Tujuan Pembelajaran:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Menentukan Faktor & Kelipatan bilangan</li>
+                        <li>Menentukan FPB & KPK dua atau tiga bilangan (dilengkapi visualisasi Venn)</li>
+                        <li>Menyelesaikan permasalahan kehidupan sehari-hari (Soal Cerita)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAME MAP / LOBBY SCREEN -->
+        <section id="mapScreen" class="hidden py-4 flex-grow flex flex-col justify-between">
+            <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700 mb-6 flex flex-wrap gap-4 items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://placehold.co/80x80/1e293b/fbbf24?text=🎒" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-amber-400" id="playerAvatar">
+                    <div>
+                        <div class="text-xs text-slate-400">Penjelajah</div>
+                        <div class="font-bold text-slate-100" id="displayPlayerName">---</div>
+                    </div>
+                </div>
+
+                <!-- Lives and Score panel -->
+                <div class="flex items-center gap-6">
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400 flex items-center gap-1 justify-center"><i class="fa-solid fa-heart text-red-500"></i> Nyawa</div>
+                        <div class="flex gap-1 mt-1 justify-center" id="heartContainer">
+                            <!-- JS Dynamic hearts -->
+                        </div>
+                    </div>
+                    <div class="text-center border-l border-slate-700 pl-6">
+                        <div class="text-xs text-slate-400"><i class="fa-solid fa-star text-amber-400"></i> Skor Total</div>
+                        <div class="font-playful text-xl md:text-2xl font-black text-amber-400" id="displayScore">0</div>
+                    </div>
+                    <div class="text-center border-l border-slate-700 pl-6">
+                        <div class="text-xs text-slate-400"><i class="fa-solid fa-hourglass-half text-sky-400"></i> Waktu Berjalan</div>
+                        <div class="font-mono text-sm md:text-base text-sky-300" id="totalTimerDisplay">00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map View Container -->
+            <div class="flex-grow flex flex-col justify-center items-center py-6">
+                <h3 class="font-playful text-xl md:text-2xl text-slate-300 mb-8 text-center"><i class="fa-solid fa-map-marked mr-2 text-yellow-500"></i> Rute Penjelajahan</h3>
+
+                <div class="relative w-full max-w-4xl p-4 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4">
+                    <!-- Map Path lines (Hidden on mobile, showing flow column-wise, on desktop row-wise) -->
+                    <div class="hidden md:block absolute top-1/2 left-10 right-10 h-1 border-t-4 border-dashed border-slate-700 -translate-y-1/2 z-0"></div>
+
+                    <!-- LEVEL 1 CARD -->
+                    <div class="level-card z-10 w-full md:w-auto flex flex-col items-center" id="levelCard-1">
+                        <button onclick="enterLevel(1)" class="level-node-btn w-16 h-16 rounded-full bg-slate-800 border-4 border-slate-600 hover:border-amber-400 text-slate-400 hover:text-amber-400 transition-all flex items-center justify-center font-playful font-black text-xl shadow-lg relative cursor-not-allowed">
+                            1
+                            <span class="absolute -top-3 -right-2 bg-indigo-600 text-[10px] text-white px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">Mulai</span>
+                        </button>
+                        <span class="text-xs font-semibold text-slate-300 mt-2">1. Faktor Bilangan</span>
+                        <span class="text-[10px] text-slate-500" id="levelScore-1">Belum Terbuka</span>
+                    </div>
+
+                    <!-- LEVEL 2 CARD -->
+                    <div class="level-card z-10 w-full md:w-auto flex flex-col items-center" id="levelCard-2">
+                        <button onclick="enterLevel(2)" class="level-node-btn w-16 h-16 rounded-full bg-slate-800 border-4 border-slate-700 text-slate-600 transition-all flex items-center justify-center font-playful font-black text-xl shadow-lg relative cursor-not-allowed" disabled>
+                            2
+                            <i class="fa-solid fa-lock absolute text-xs bg-slate-900 p-1.5 rounded-full text-slate-500 -top-2 -right-1"></i>
+                        </button>
+                        <span class="text-xs font-semibold text-slate-400 mt-2">2. Kelipatan</span>
+                        <span class="text-[10px] text-slate-500" id="levelScore-2">Terkunci</span>
+                    </div>
+
+                    <!-- LEVEL 3 CARD -->
+                    <div class="level-card z-10 w-full md:w-auto flex flex-col items-center" id="levelCard-3">
+                        <button onclick="enterLevel(3)" class="level-node-btn w-16 h-16 rounded-full bg-slate-800 border-4 border-slate-700 text-slate-600 transition-all flex items-center justify-center font-playful font-black text-xl shadow-lg relative cursor-not-allowed" disabled>
+                            3
+                            <i class="fa-solid fa-lock absolute text-xs bg-slate-900 p-1.5 rounded-full text-slate-500 -top-2 -right-1"></i>
+                        </button>
+                        <span class="text-xs font-semibold text-slate-400 mt-2">3. Cari FPB</span>
+                        <span class="text-[10px] text-slate-500" id="levelScore-3">Terkunci</span>
+                    </div>
+
+                    <!-- LEVEL 4 CARD -->
+                    <div class="level-card z-10 w-full md:w-auto flex flex-col items-center" id="levelCard-4">
+                        <button onclick="enterLevel(4)" class="level-node-btn w-16 h-16 rounded-full bg-slate-800 border-4 border-slate-700 text-slate-600 transition-all flex items-center justify-center font-playful font-black text-xl shadow-lg relative cursor-not-allowed" disabled>
+                            4
+                            <i class="fa-solid fa-lock absolute text-xs bg-slate-900 p-1.5 rounded-full text-slate-500 -top-2 -right-1"></i>
+                        </button>
+                        <span class="text-xs font-semibold text-slate-400 mt-2">4. Cari KPK</span>
+                        <span class="text-[10px] text-slate-500" id="levelScore-4">Terkunci</span>
+                    </div>
+
+                    <!-- LEVEL 5 CARD -->
+                    <div class="level-card z-10 w-full md:w-auto flex flex-col items-center" id="levelCard-5">
+                        <button onclick="enterLevel(5)" class="level-node-btn w-16 h-16 rounded-full bg-slate-800 border-4 border-slate-700 text-slate-600 transition-all flex items-center justify-center font-playful font-black text-xl shadow-lg relative cursor-not-allowed" disabled>
+                            5
+                            <i class="fa-solid fa-lock absolute text-xs bg-slate-900 p-1.5 rounded-full text-slate-500 -top-2 -right-1"></i>
+                        </button>
+                        <span class="text-xs font-semibold text-slate-400 mt-2">5. Soal Cerita</span>
+                        <span class="text-[10px] text-slate-500" id="levelScore-5">Terkunci</span>
+                    </div>
+
+                    <!-- BONUS LEVEL CARD -->
+                    <div class="level-card z-10 w-full md:w-auto flex flex-col items-center" id="levelCard-6">
+                        <button onclick="enterLevel(6)" class="level-node-btn w-16 h-16 rounded-full bg-slate-800 border-4 border-slate-700 text-slate-600 transition-all flex items-center justify-center font-playful font-black text-xl shadow-lg relative cursor-not-allowed" disabled>
+                            ⭐
+                            <i class="fa-solid fa-lock absolute text-xs bg-slate-900 p-1.5 rounded-full text-slate-500 -top-2 -right-1"></i>
+                        </button>
+                        <span class="text-xs font-semibold text-slate-400 mt-2">Level Bonus</span>
+                        <span class="text-[10px] text-slate-500" id="levelScore-6">Terkunci</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hint Area -->
+            <div class="text-center p-3 text-slate-400 text-xs md:text-sm bg-slate-800/40 rounded-xl border border-slate-700/30">
+                <i class="fa-solid fa-info-circle text-amber-400 mr-1 animate-pulse"></i> Klik level kuno yang terbuka untuk memecahkan soalnya!
+            </div>
+        </section>
+
+        <!-- GAMEPLAY SCREEN -->
+        <section id="gamePlayScreen" class="hidden py-4 flex-grow flex flex-col justify-center">
+            <div class="w-full max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left panel: Question & Options -->
+                <div class="lg:col-span-2 flex flex-col gap-4">
+                    <div class="glass p-6 rounded-2xl relative shadow-xl overflow-hidden">
+                        <!-- Top header of Level Card -->
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3">
+                            <span class="bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-full text-xs" id="gamePlayLevelLabel">Level 1</span>
+                            <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
+                                <i class="fa-solid fa-hourglass-half animate-spin text-amber-500"></i>
+                                <span id="timeLeftLabel">30s</span>
+                            </div>
+                        </div>
+
+                        <!-- Level Quest / Story background -->
+                        <p class="text-xs text-amber-300 font-semibold uppercase tracking-widest mb-1" id="gameQuestType">Level Quest</p>
+                        
+                        <!-- Question Text -->
+                        <h4 class="font-playful text-lg md:text-2xl font-bold text-slate-100 mb-6" id="gameQuestionText">
+                            Loading pertanyaan...
+                        </h4>
+
+                        <!-- Custom Interaction Area (Only shown when level contains visual assists like factoring/Venn) -->
+                        <div id="inlineVisualizer" class="mb-6 hidden bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                            <!-- Visualizers inserted dynamically -->
+                        </div>
+
+                        <!-- Multiple Choice Options -->
+                        <div class="space-y-3" id="optionsContainer">
+                            <!-- Dynamic Choice Buttons -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right panel: Interactive Smart Guide & Facts -->
+                <div class="flex flex-col gap-4">
+                    <!-- Helper Mascot Card -->
+                    <div class="glass p-5 rounded-2xl flex flex-col justify-between border border-indigo-500/20 shadow-md">
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="bg-indigo-600 p-2 rounded-lg text-xs"><i class="fa-solid fa-graduation-cap"></i></span>
+                                <h5 class="font-playful text-sm font-bold text-indigo-300">Buku Panduan Petualang</h5>
+                            </div>
+                            <!-- Dynamic Education Hint -->
+                            <div id="educationHintText" class="text-xs text-slate-300 leading-relaxed space-y-2">
+                                Belum ada panduan.
+                            </div>
+                        </div>
+                        
+                        <!-- Mini visual aid link -->
+                        <div class="mt-4 pt-3 border-t border-slate-700/50">
+                            <p class="text-[10px] text-slate-400">Bingung dengan soal ini? Klik tombol di bawah ini untuk membuka Alat Bantu Venn Diagram di samping kanan!</p>
+                            <button onclick="toggleVennHelper(true)" class="w-full mt-2 text-xs bg-indigo-900/40 hover:bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-eye mr-1"></i> Buka Venn Diagram Dinamis
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Progress and Current Score card -->
+                    <div class="bg-slate-800/40 p-4 rounded-2xl border border-slate-700 flex flex-col gap-2">
+                        <div class="flex justify-between items-center text-xs text-slate-400">
+                            <span>Bobot Nilai Soal</span>
+                            <span id="levelWeight">10 Poin</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-400">
+                            <span>Sistem Nyawa</span>
+                            <span class="text-red-400"><i class="fa-solid fa-heart mr-1"></i> Jangan sampai habis!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAME OVER / FAILURE SCREEN -->
+        <section id="gameOverScreen" class="hidden py-8 text-center flex flex-col items-center">
+            <div class="max-w-md w-full bg-slate-800/80 border border-red-500/30 rounded-3xl p-8 shadow-2xl space-y-6">
+                <div class="w-24 h-24 bg-red-950/50 border-4 border-red-500 text-red-500 rounded-full flex items-center justify-center mx-auto text-4xl animate-bounce">
+                    <i class="fa-solid fa-skull-crossbones"></i>
+                </div>
+                
+                <h3 class="font-playful text-2xl md:text-3xl font-bold text-red-400">Misi Terhenti!</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Sisa nyawa petualanganmu telah habis. Jangan berkecil hati, setiap arkeolog hebat pasti pernah menemui kegagalan sebelum menemukan harta karun utama!
+                </p>
+
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700 space-y-1">
+                    <p class="text-xs text-slate-400">Skor Terakhir Anda</p>
+                    <p class="text-2xl font-playful font-black text-amber-400" id="gameOverScoreText">0 Poin</p>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <button onclick="restartGame()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Ulangi Petualangan</span>
+                    </button>
+                    <button onclick="goToMap()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-100 font-bold py-3 rounded-xl transition">
+                        Kembali ke Rute
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VICTORY & SUMMARY SCREEN -->
+        <section id="victoryScreen" class="hidden py-4 flex-grow flex flex-col justify-center">
+            <div class="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Left panel: Performance Metrics & Rubric Score -->
+                <div class="glass p-6 md:p-8 rounded-3xl flex flex-col justify-between border-2 border-emerald-500/30">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-emerald-500 text-slate-950 p-2 rounded-xl"><i class="fa-solid fa-trophy text-lg"></i></span>
+                            <h3 class="font-playful text-xl md:text-2xl font-bold text-emerald-400">Petualangan Selesai!</h3>
+                        </div>
+                        <p class="text-xs md:text-sm text-slate-300 leading-relaxed mb-6">
+                            Selamat! Anda telah memecahkan semua teka-teki KPK dan FPB serta membuka peti harta karun utama Matematika.
+                        </p>
+
+                        <!-- Rubric Details -->
+                        <div class="space-y-4 bg-slate-900/50 p-4 rounded-xl border border-slate-700 mb-6">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-700 pb-2">Rubrik Penilaian Hasil Belajar</h4>
+                            
+                            <!-- Accuracy Criteria -->
+                            <div class="flex justify-between items-center text-xs md:text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-blue-400 w-5"><i class="fa-solid fa-circle-check"></i></span>
+                                    <span>Ketepatan Jawaban (Bobot 70%)</span>
+                                </div>
+                                <span class="font-bold text-slate-200" id="rubricAccuracy">0 / 70</span>
+                            </div>
+
+                            <!-- Speed Criteria -->
+                            <div class="flex justify-between items-center text-xs md:text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-amber-400 w-5"><i class="fa-solid fa-bolt"></i></span>
+                                    <span>Kecepatan Menjawab (Bobot 20%)</span>
+                                </div>
+                                <span class="font-bold text-slate-200" id="rubricSpeed">0 / 20</span>
+                            </div>
+
+                            <!-- Level Completion Criteria -->
+                            <div class="flex justify-between items-center text-xs md:text-sm">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-purple-400 w-5"><i class="fa-solid fa-flag-checkered"></i></span>
+                                    <span>Penyelesaian Level (Bobot 10%)</span>
+                                </div>
+                                <span class="font-bold text-slate-200" id="rubricCompletion">10 / 10</span>
+                            </div>
+
+                            <!-- Final Weighted Grade -->
+                            <div class="flex justify-between items-center border-t border-slate-700 pt-3 text-sm md:text-base font-bold">
+                                <span>NILAI AKHIR</span>
+                                <span class="text-amber-400 text-lg md:text-xl font-playful" id="rubricFinalGrade">0 / 100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medal Award Display -->
+                    <div class="flex items-center gap-4 bg-slate-800 p-4 rounded-xl border border-slate-700">
+                        <div id="rewardMedalArt" class="w-16 h-16 bg-amber-500/10 rounded-full border border-amber-500/20 flex items-center justify-center text-3xl">
+                            🥇
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">Medali Penghargaan</p>
+                            <h4 class="font-playful text-lg font-bold text-amber-400" id="rewardMedalTitle">Medali Emas</h4>
+                            <p class="text-[11px] text-slate-300" id="rewardMedalDesc">Selamat Anda Juara Matematika!</p>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                        <button onclick="restartGame()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs md:text-sm transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Ulangi Game</span>
+                        </button>
+                        <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs md:text-sm transition flex items-center justify-center gap-2 shadow-md">
+                            <i class="fa-solid fa-print"></i>
+                            <span>Print Sertifikat</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right panel: Interactive High-Fidelity Printable Digital Certificate -->
+                <div class="glass p-4 rounded-3xl border border-slate-700 flex flex-col justify-center items-center">
+                    <p class="text-xs text-slate-400 mb-2"><i class="fa-solid fa-eye"></i> Pratinjau Sertifikat Kelulusan Digital</p>
+                    
+                    <!-- HTML Printable Certificate Layout container with explicit borders and stamps -->
+                    <div id="digitalCertificate" class="relative bg-white text-slate-900 border-[10px] border-amber-800 p-6 rounded-xl shadow-2xl w-full max-w-sm aspect-[4/3] flex flex-col justify-between overflow-hidden">
+                        <!-- Border Corner Ornaments -->
+                        <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-amber-600"></div>
+                        <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-amber-600"></div>
+                        <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-amber-600"></div>
+                        <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-amber-600"></div>
+
+                        <!-- Certificate Header -->
+                        <div class="text-center">
+                            <h5 class="text-[10px] tracking-widest text-amber-800 font-bold uppercase mb-0.5">Sertifikat Penghargaan</h5>
+                            <h4 class="font-playful text-sm font-black text-slate-800 leading-none">JUARA MATEMATIKA SD</h4>
+                            <div class="w-1/3 h-[1px] bg-amber-600 mx-auto my-1"></div>
+                        </div>
+
+                        <!-- Certificate Body text -->
+                        <div class="text-center my-1 space-y-1">
+                            <p class="text-[8px] italic text-slate-500">Dengan bangga diberikan kepada:</p>
+                            <h3 class="font-playful text-base font-bold text-indigo-900 border-b border-dashed border-slate-300 inline-block px-4 py-0.5" id="certPlayerName">NAMA PESERTA</h3>
+                            <p class="text-[8px] text-slate-600 max-w-[280px] mx-auto leading-normal">
+                                Telah berhasil menyelesaikan seluruh rute petualangan digital Matematika, memecahkan materi <span class="font-bold">Faktor, Kelipatan, KPK, dan FPB</span> Kelas V SD Semester 1 dengan hasil gemilang.
+                            </p>
+                        </div>
+
+                        <!-- Certificate Footer, Medal Badge & Signature -->
+                        <div class="flex justify-between items-end mt-2 pt-2 border-t border-slate-100">
+                            <!-- Left: Score badge -->
+                            <div class="text-left">
+                                <div class="text-[7px] text-slate-400">NILAI AKHIR:</div>
+                                <div class="text-xs font-black text-indigo-700" id="certFinalGrade">100 / 100</div>
+                                <div class="text-[7px] text-slate-400" id="certMedalEarned">Medali Emas</div>
+                            </div>
+
+                            <!-- Middle: Gold Seal / Badge vector icon -->
+                            <div class="relative w-10 h-10 flex items-center justify-center">
+                                <div class="absolute w-8 h-8 bg-amber-500 rounded-full animate-pulse border border-amber-300 shadow"></div>
+                                <div class="absolute w-6 h-6 bg-yellow-400 rounded-full border border-amber-600 flex items-center justify-center text-xs">⭐</div>
+                                <!-- Ribbon -->
+                                <div class="absolute bottom-[-4px] left-2 w-2 h-4 bg-amber-600 transform rotate-12 z-[-1]"></div>
+                                <div class="absolute bottom-[-4px] right-2 w-2 h-4 bg-amber-600 transform -rotate-12 z-[-1]"></div>
+                            </div>
+
+                            <!-- Right: Teacher signature area -->
+                            <div class="text-right">
+                                <div class="text-[6px] text-slate-400">Guru Kelas V</div>
+                                <div class="italic text-[8px] font-bold text-slate-800 my-0.5" style="font-family: 'Georgia', serif;">Mathema-Edu</div>
+                                <div class="w-12 h-[1px] bg-slate-400 ml-auto"></div>
+                                <div class="text-[6px] text-slate-400">ID Sertifikat: <span id="certId">KPKFPB-000</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FLOATING INTERACTIVE ALAT BANTU VENN DIAGRAM (DOCK SIDEBAR) -->
+    <div id="vennHelperPanel" class="fixed top-0 right-0 h-full w-full max-w-md bg-slate-900 border-l border-slate-700 shadow-2xl z-[100] transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
+        
+        <!-- Sidebar Header -->
+        <div class="p-4 border-b border-slate-800 bg-slate-850 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shapes text-indigo-400 text-lg"></i>
+                <h4 class="font-playful text-base font-bold text-slate-100">Alat Bantu Venn FPB & KPK</h4>
+            </div>
+            <button onclick="toggleVennHelper(false)" class="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Sidebar Content -->
+        <div class="p-4 flex-grow overflow-y-auto space-y-6">
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Gunakan alat bantu visual ini untuk menemukan FPB (Faktor Persekutuan Terbesar) dan KPK (Kelipatan Persekutuan Terkecil) dari dua bilangan melalui diagram lingkaran faktorisasi prima!
+            </p>
+
+            <!-- Number Inputs -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1" for="vennNumA">Bilangan A:</label>
+                    <input type="number" id="vennNumA" value="24" min="2" max="150" onchange="calculateVenn()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm font-semibold focus:outline-none focus:border-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1" for="vennNumB">Bilangan B:</label>
+                    <input type="number" id="vennNumB" value="36" min="2" max="150" onchange="calculateVenn()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm font-semibold focus:outline-none focus:border-indigo-500 transition">
+                </div>
+            </div>
+
+            <!-- Prime Factorizations List -->
+            <div class="bg-slate-950 p-3 rounded-lg space-y-2 border border-slate-850">
+                <div class="text-xs flex justify-between">
+                    <span class="text-sky-400 font-bold">Faktor Prima A:</span>
+                    <span id="vennFactorAList" class="font-mono text-slate-300">2 × 2 × 2 × 3 (24)</span>
+                </div>
+                <div class="text-xs flex justify-between">
+                    <span class="text-amber-400 font-bold">Faktor Prima B:</span>
+                    <span id="vennFactorBList" class="font-mono text-slate-300">2 × 2 × 3 × 3 (36)</span>
+                </div>
+            </div>
+
+            <!-- Dynamic SVG Venn Diagram Rendering -->
+            <div class="flex justify-center py-4 bg-slate-950 rounded-xl relative overflow-hidden">
+                <div class="absolute top-2 left-2 text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Visual Venn Diagram</div>
+                
+                <svg id="vennSvg" viewBox="0 0 400 240" class="w-full max-w-[320px] h-auto">
+                    <!-- Left Circle A -->
+                    <circle cx="150" cy="120" r="80" fill="rgba(56, 189, 248, 0.2)" stroke="#38bdf8" stroke-width="3" />
+                    <!-- Right Circle B -->
+                    <circle cx="250" cy="120" r="80" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="3" />
+                    
+                    <!-- Labels -->
+                    <text x="100" y="55" fill="#38bdf8" font-size="12" font-weight="bold">A</text>
+                    <text x="300" y="55" fill="#f59e0b" font-size="12" font-weight="bold">B</text>
+
+                    <!-- Prime numbers inside A (left only) -->
+                    <g id="svgFactorsOnlyA" transform="translate(100, 120)">
+                        <!-- Dynamic factors -->
+                    </g>
+
+                    <!-- Prime numbers shared (middle) -->
+                    <g id="svgFactorsShared" transform="translate(200, 120)">
+                        <!-- Dynamic factors -->
+                    </g>
+
+                    <!-- Prime numbers inside B (right only) -->
+                    <g id="svgFactorsOnlyB" transform="translate(300, 120)">
+                        <!-- Dynamic factors -->
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Calculated Results -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-indigo-950/40 p-3 rounded-xl border border-indigo-900/50 text-center">
+                    <p class="text-[10px] text-indigo-400 font-semibold uppercase">FPB (Faktor Bersama)</p>
+                    <p class="text-lg font-playful font-black text-indigo-300" id="vennFpbResult">12</p>
+                    <p class="text-[9px] text-indigo-400" id="vennFpbFormula">2 × 2 × 3</p>
+                </div>
+                <div class="bg-emerald-950/40 p-3 rounded-xl border border-emerald-900/50 text-center">
+                    <p class="text-[10px] text-emerald-400 font-semibold uppercase">KPK (Kelipatan Semua)</p>
+                    <p class="text-lg font-playful font-black text-emerald-300" id="vennKpkResult">72</p>
+                    <p class="text-[9px] text-emerald-400" id="vennKpkFormula">2 × 2 × 2 × 3 × 3</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Footer Info -->
+        <div class="p-4 border-t border-slate-800 bg-slate-950 text-center text-[10px] text-slate-500">
+            Arkeolog Matematika • Gunakan FPB untuk membagi adil, KPK untuk jadwal bersama.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glass border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
+            <span>© 2026 Petualangan KPK & FPB - Media Pembelajaran Matematika SD Kelas V</span>
+            <div class="flex gap-4">
+                <span class="hover:text-slate-400 cursor-pointer"><i class="fa-solid fa-graduation-cap"></i> Kurikulum Merdeka</span>
+                <span class="hover:text-slate-400 cursor-pointer"><i class="fa-solid fa-heart text-red-500"></i> Untuk Pendidikan</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /*
+            GAME ARCHITECTURAL LOGIC AND STATE
+        */
+        const gameData = {
+            playerName: "Penjelajah",
+            currentLevel: 1,
+            unlockedLevel: 1,
+            score: 0,
+            lives: 3,
+            maxLives: 3,
+            startTime: null,
+            totalTimerInterval: null,
+            levelTimerInterval: null,
+            totalElapsedTime: 0, // in seconds
+            soundEnabled: true,
+            completedLevels: {},
+            currentQuestion: null,
+            selectedOptionIndex: null
+        };
+
+        // Standard levels questions matching user flow design
+        const questions = {
+            1: {
+                levelNum: 1,
+                points: 10,
+                type: "TEMUKAN FAKTOR",
+                title: "Level 1 – Temukan Faktor",
+                question: "Faktor dari 24 adalah bilangan-bilangan yang dapat membagi habis 24 tanpa sisa. Manakah kumpulan faktor 24 yang tepat?",
+                options: [
+                    "A. 1, 2, 3, 4, 6, 8, 12, 24",
+                    "B. 2, 4, 8, 24",
+                    "C. 1, 3, 6, 12"
+                ],
+                correct: 0,
+                hint: "Gunakan cara berpasangan: 1x24, 2x12, 3x8, 4x6. Semua angka tersebut merupakan faktor pengali dari 24!",
+                visualHelper: { type: "factors", value: 24 }
+            },
+            2: {
+                levelNum: 2,
+                points: 10,
+                type: "TEMUKAN KELIPATAN",
+                title: "Level 2 – Temukan Kelipatan",
+                question: "Kelipatan 6 yang nilainya kurang dari 40 adalah...",
+                options: [
+                    "A. 6, 12, 18, 24, 30, 36",
+                    "B. 6, 12, 16, 20",
+                    "C. 12, 18, 24"
+                ],
+                correct: 0,
+                hint: "Kelipatan diperoleh dengan mengalikan 6 secara berurutan (6, 12, 18, ...) dan berhenti sebelum mencapai angka 40.",
+                visualHelper: { type: "multiples", value: 6, limit: 40 }
+            },
+            3: {
+                levelNum: 3,
+                points: 20,
+                type: "CARI FPB (GCF)",
+                title: "Level 3 – Cari FPB",
+                question: "Carilah FPB (Faktor Persekutuan Terbesar) dari bilangan 24 dan 36!",
+                options: [
+                    "A. 6",
+                    "B. 12",
+                    "C. 18"
+                ],
+                correct: 1,
+                hint: "Gunakan diagram Venn pembantu di samping kanan! Faktorisasi prima 24 = 2³ × 3, dan 36 = 2² × 3². FPB didapat dari perkalian faktor prima sekutu terkecil: 2² × 3 = 12.",
+                visualHelper: { type: "venn", a: 24, b: 36 }
+            },
+            4: {
+                levelNum: 4,
+                points: 20,
+                type: "CARI KPK (LCM)",
+                title: "Level 4 – Cari KPK",
+                question: "Kelipatan Persekutuan Terkecil (KPK) dari bilangan 12 dan 18 adalah...",
+                options: [
+                    "A. 24",
+                    "B. 36",
+                    "C. 48"
+                ],
+                correct: 1,
+                hint: "KPK diperoleh dengan mengalikan seluruh faktor prima unik dengan pangkat terbesar. Faktorisasi: 12 = 2² × 3, 18 = 2 × 3². KPK = 2² × 3² = 36.",
+                visualHelper: { type: "venn", a: 12, b: 18 }
+            },
+            5: {
+                levelNum: 5,
+                points: 20,
+                type: "SOAL CERITA",
+                title: "Level 5 – Soal Cerita",
+                question: "Dina berenang setiap 6 hari sekali. Budi berenang setiap 8 hari sekali. Jika hari ini mereka berenang bersama-sama, maka mereka akan berenang bersama lagi setelah...",
+                options: [
+                    "A. 24 hari",
+                    "B. 18 hari",
+                    "C. 48 hari"
+                ],
+                correct: 0,
+                hint: "Peristiwa berulang berkala di masa depan diselesaikan menggunakan konsep KPK. Carilah KPK dari 6 dan 8!",
+                visualHelper: { type: "venn", a: 6, b: 8 }
+            },
+            6: {
+                levelNum: 6,
+                points: 30,
+                type: "BONUS LEVEL",
+                title: "Level Bonus – Petualangan Ekstra",
+                question: "Prasasti Emas terakhir membutuhkan keahlian FPB 3 bilangan sekaligus. Berapakah FPB dari 48, 60, dan 72?",
+                options: [
+                    "A. 6",
+                    "B. 12",
+                    "C. 24"
+                ],
+                correct: 1,
+                hint: "Faktorisasi Prima:<br>48 = 2⁴ × 3<br>60 = 2² × 3 × 5<br>72 = 2³ × 3²<br>Faktor prima persekutuan yang dimiliki ketiganya adalah 2 dan 3. Ambil pangkat terkecil: 2² × 3 = 12.",
+                visualHelper: { type: "three", values: [48, 60, 72] }
+            }
+        };
+
+        // Audio synthesizer using Web Audio API for safe, retro game-sounds
+        let audioCtx = null;
+        function playTone(freq, type, duration) {
+            if (!gameData.soundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type || 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        function playCoinSound() {
+            playTone(523.25, 'triangle', 0.1); // C5
+            setTimeout(() => playTone(659.25, 'sine', 0.25), 100); // E5
+        }
+
+        function playErrorSound() {
+            playTone(150, 'sawtooth', 0.3);
+        }
+
+        function playVictorySound() {
+            playTone(523.25, 'sine', 0.15); // C5
+            setTimeout(() => playTone(659.25, 'sine', 0.15), 150); // E5
+            setTimeout(() => playTone(783.99, 'sine', 0.15), 300); // G5
+            setTimeout(() => playTone(1046.50, 'sine', 0.4), 450); // C6
+        }
+
+        function toggleSound() {
+            gameData.soundEnabled = !gameData.soundEnabled;
+            const btn = document.getElementById("soundBtn");
+            if (gameData.soundEnabled) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
+                btn.className = "bg-slate-700 hover:bg-slate-600 text-slate-300 p-2 rounded-lg text-sm transition-all";
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
+                btn.className = "bg-rose-950/50 hover:bg-rose-900/50 text-rose-400 p-2 rounded-lg text-sm transition-all";
+            }
+        }
+
+        /*
+            UI ENGINE SWITCHING
+        */
+        function switchScreen(screenId) {
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("mapScreen").classList.add("hidden");
+            document.getElementById("gamePlayScreen").classList.add("hidden");
+            document.getElementById("gameOverScreen").classList.add("hidden");
+            document.getElementById("victoryScreen").classList.add("hidden");
+
+            document.getElementById(screenId).classList.remove("hidden");
+        }
+
+        /*
+            GAME START AND FLOW CONTROL
+        */
+        function startGame() {
+            const inputName = document.getElementById("playerName").value.trim();
+            gameData.playerName = inputName || "Penjelajah Matematika";
+            document.getElementById("displayPlayerName").innerText = gameData.playerName;
+            document.getElementById("certPlayerName").innerText = gameData.playerName.toUpperCase();
+
+            // Set dynamic certificate ID
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById("certId").innerText = `KPKFPB-${randomID}`;
+
+            gameData.score = 0;
+            gameData.lives = 3;
+            gameData.unlockedLevel = 1;
+            gameData.completedLevels = {};
+            gameData.totalElapsedTime = 0;
+
+            updateLivesDisplay();
+            updateScoreDisplay();
+            updateMapNodes();
+
+            // Start main game timer
+            clearInterval(gameData.totalTimerInterval);
+            gameData.startTime = Date.now();
+            gameData.totalTimerInterval = setInterval(() => {
+                gameData.totalElapsedTime = Math.floor((Date.now() - gameData.startTime) / 1000);
+                const minutes = Math.floor(gameData.totalElapsedTime / 60).toString().padStart(2, '0');
+                const seconds = (gameData.totalElapsedTime % 60).toString().padStart(2, '0');
+                document.getElementById("totalTimerDisplay").innerText = `${minutes}:${seconds}`;
+            }, 1000);
+
+            switchScreen("mapScreen");
+            playCoinSound();
+        }
+
+        function restartGame() {
+            clearInterval(gameData.totalTimerInterval);
+            clearInterval(gameData.levelTimerInterval);
+            startGame();
+        }
+
+        function goToMap() {
+            clearInterval(gameData.levelTimerInterval);
+            updateMapNodes();
+            updateScoreDisplay();
+            switchScreen("mapScreen");
+        }
+
+        function updateLivesDisplay() {
+            const container = document.getElementById("heartContainer");
+            container.innerHTML = "";
+            for (let i = 0; i < gameData.maxLives; i++) {
+                if (i < gameData.lives) {
+                    container.innerHTML += `<i class="fa-solid fa-heart text-rose-500 text-lg"></i>`;
+                } else {
+                    container.innerHTML += `<i class="fa-regular fa-heart text-slate-600 text-lg"></i>`;
+                }
+            }
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById("displayScore").innerText = gameData.score;
+        }
+
+        // Lock & Unlock map nodes dynamically
+        function updateMapNodes() {
+            for (let l = 1; l <= 6; l++) {
+                const card = document.getElementById(`levelCard-${l}`);
+                const btn = card.querySelector(".level-node-btn");
+                const scoreSub = document.getElementById(`levelScore-${l}`);
+
+                if (l <= gameData.unlockedLevel) {
+                    // Unlocked
+                    btn.disabled = false;
+                    btn.classList.remove("border-slate-700", "text-slate-600", "cursor-not-allowed");
+                    btn.classList.add("border-amber-400", "text-amber-400", "hover:bg-amber-500/10", "cursor-pointer");
+                    
+                    // Remove lock icon if present
+                    const lockIcon = btn.querySelector("i.fa-lock");
+                    if (lockIcon) lockIcon.remove();
+
+                    if (gameData.completedLevels[l]) {
+                        // Completed status
+                        scoreSub.innerText = `Selesai: +${questions[l].points} Poin`;
+                        scoreSub.className = "text-[10px] text-emerald-400 font-semibold";
+                        btn.classList.add("bg-emerald-950/40", "border-emerald-500", "text-emerald-400");
+                        if (!btn.querySelector(".fa-check-circle")) {
+                            btn.innerHTML += `<i class="fa-solid fa-circle-check absolute text-xs bg-slate-900 p-1.5 rounded-full text-emerald-400 -top-2 -right-1"></i>`;
+                        }
+                    } else {
+                        scoreSub.innerText = "Belum Selesai";
+                        scoreSub.className = "text-[10px] text-amber-400";
+                    }
+                } else {
+                    // Locked
+                    btn.disabled = true;
+                    btn.classList.add("border-slate-700", "text-slate-600", "cursor-not-allowed");
+                    btn.classList.remove("border-amber-400", "text-amber-400", "hover:bg-amber-500/10", "cursor-pointer");
+                }
+            }
+        }
+
+        function enterLevel(levelNum) {
+            gameData.currentLevel = levelNum;
+            const q = questions[levelNum];
+            gameData.currentQuestion = q;
+
+            // Prepare screen visual elements
+            document.getElementById("gamePlayLevelLabel").innerText = q.type;
+            document.getElementById("gamePlayLevelLabel").className = levelNum === 6 
+                ? "bg-purple-600 text-white font-bold px-3 py-1 rounded-full text-xs" 
+                : "bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-full text-xs";
+            
+            document.getElementById("gameQuestionText").innerText = q.question;
+            document.getElementById("levelWeight").innerText = `+${q.points} Poin`;
+            document.getElementById("educationHintText").innerHTML = q.hint;
+
+            // Handle inline visualizers (Custom aids per question types)
+            const inlineVis = document.getElementById("inlineVisualizer");
+            inlineVis.innerHTML = "";
+            inlineVis.classList.add("hidden");
+
+            if (q.visualHelper.type === "factors") {
+                inlineVis.classList.remove("hidden");
+                inlineVis.innerHTML = `
+                    <p class="text-xs font-bold text-sky-400 mb-2"><i class="fa-solid fa-circle-nodes mr-1"></i> Pohon Faktor / Pasangan Faktor 24:</p>
+                    <div class="grid grid-cols-4 gap-2 text-center">
+                        <div class="bg-slate-800 p-2 rounded text-xs font-mono">1 × 24 = 24</div>
+                        <div class="bg-slate-800 p-2 rounded text-xs font-mono">2 × 12 = 24</div>
+                        <div class="bg-slate-800 p-2 rounded text-xs font-mono">3 × 8 = 24</div>
+                        <div class="bg-slate-800 p-2 rounded text-xs font-mono">4 × 6 = 24</div>
+                    </div>
+                `;
+            } else if (q.visualHelper.type === "multiples") {
+                inlineVis.classList.remove("hidden");
+                inlineVis.innerHTML = `
+                    <p class="text-xs font-bold text-amber-400 mb-2"><i class="fa-solid fa-list-ol mr-1"></i> Garis Bilangan Kelipatan 6:</p>
+                    <div class="flex flex-wrap gap-2 text-center justify-center">
+                        <div class="bg-indigo-900/40 px-2 py-1 rounded text-xs">6</div>
+                        <div class="text-slate-600 text-xs">→</div>
+                        <div class="bg-indigo-900/40 px-2 py-1 rounded text-xs">12</div>
+                        <div class="text-slate-600 text-xs">→</div>
+                        <div class="bg-indigo-900/40 px-2 py-1 rounded text-xs">18</div>
+                        <div class="text-slate-600 text-xs">→</div>
+                        <div class="bg-indigo-900/40 px-2 py-1 rounded text-xs">24</div>
+                        <div class="text-slate-600 text-xs">→</div>
+                        <div class="bg-indigo-900/40 px-2 py-1 rounded text-xs">30</div>
+                        <div class="text-slate-600 text-xs">→</div>
+                        <div class="bg-indigo-900/40 px-2 py-1 rounded text-xs">36</div>
+                        <div class="text-rose-500 text-xs font-bold font-mono"> (42 > batas 40❌)</div>
+                    </div>
+                `;
+            }
+
+            // Sync with sidebar Venn helper if they are on levels 3, 4, 5
+            if (q.visualHelper.type === "venn") {
+                document.getElementById("vennNumA").value = q.visualHelper.a;
+                document.getElementById("vennNumB").value = q.visualHelper.b;
+                calculateVenn();
+            }
+
+            // Set options choices
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
+            q.options.forEach((opt, idx) => {
+                optionsContainer.innerHTML += `
+                    <button onclick="selectOption(${idx})" class="option-btn w-full text-left bg-slate-800 hover:bg-slate-700/80 border border-slate-700 hover:border-slate-500 text-slate-100 font-medium py-3.5 px-5 rounded-xl transition duration-150 transform hover:scale-[1.01] active:scale-100 flex justify-between items-center group">
+                        <span>${opt}</span>
+                        <span class="w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center group-hover:border-amber-400 text-slate-500 transition-all text-xs" id="optMark-${idx}">
+                            <i class="fa-solid fa-circle text-[6px] opacity-0 transition-all"></i>
+                        </span>
+                    </button>
+                `;
+            });
+
+            // Start level countdown (30s)
+            let levelTimeLeft = 30;
+            document.getElementById("timeLeftLabel").innerText = `${levelTimeLeft}s`;
+            clearInterval(gameData.levelTimerInterval);
+            gameData.levelTimerInterval = setInterval(() => {
+                levelTimeLeft--;
+                document.getElementById("timeLeftLabel").innerText = `${levelTimeLeft}s`;
+                if (levelTimeLeft <= 10) {
+                    document.getElementById("timeLeftLabel").classList.add("text-rose-500", "animate-pulse");
+                } else {
+                    document.getElementById("timeLeftLabel").classList.remove("text-rose-500", "animate-pulse");
+                }
+
+                if (levelTimeLeft <= 0) {
+                    clearInterval(gameData.levelTimerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+
+            switchScreen("gamePlayScreen");
+        }
+
+        // Selected option animation highlight
+        function selectOption(idx) {
+            gameData.selectedOptionIndex = idx;
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach((btn, i) => {
+                const mark = document.getElementById(`optMark-${i}`);
+                if (i === idx) {
+                    btn.classList.add("border-amber-500", "bg-slate-750");
+                    mark.classList.add("border-amber-400", "text-amber-400");
+                    mark.innerHTML = `<i class="fa-solid fa-circle text-[6px] opacity-100"></i>`;
+                } else {
+                    btn.classList.remove("border-amber-500", "bg-slate-750");
+                    mark.classList.remove("border-amber-400", "text-amber-400");
+                    mark.innerHTML = `<i class="fa-solid fa-circle text-[6px] opacity-0"></i>`;
+                }
+            });
+
+            // Auto validate after short delay for snappy feel
+            setTimeout(() => {
+                validateAnswer();
+            }, 450);
+        }
+
+        function validateAnswer() {
+            clearInterval(gameData.levelTimerInterval);
+            const q = gameData.currentQuestion;
+            const isCorrect = gameData.selectedOptionIndex === q.correct;
+
+            if (isCorrect) {
+                playCoinSound();
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.8 }
+                });
+
+                // Award points and complete level
+                gameData.score += q.points;
+                gameData.completedLevels[gameData.currentLevel] = true;
+
+                // Unlock next level logic
+                if (gameData.currentLevel === gameData.unlockedLevel) {
+                    gameData.unlockedLevel = Math.min(gameData.currentLevel + 1, 6);
+                }
+
+                // If bonus level completed or completed everything
+                if (gameData.currentLevel === 6) {
+                    triggerVictory();
+                } else {
+                    goToMap();
+                }
+            } else {
+                playErrorSound();
+                gameData.lives--;
+                updateLivesDisplay();
+
+                if (gameData.lives <= 0) {
+                    triggerGameOver();
+                } else {
+                    // Show helpful feedback popup instead of native alert
+                    showFeedbackModal("Jawaban Kurang Tepat", "Prasasti kuno bergetar! Sayangnya jawabanmu belum benar. Ingatlah petunjuk di Buku Panduan, lalu cobalah sekali lagi di peta rute.");
+                }
+            }
+        }
+
+        function handleTimeOut() {
+            playErrorSound();
+            gameData.lives--;
+            updateLivesDisplay();
+
+            if (gameData.lives <= 0) {
+                triggerGameOver();
+            } else {
+                showFeedbackModal("Waktu Habis!", "Waktu menjawab 30 detik untuk memecahkan prasasti telah habis. Sisa nyawamu berkurang 1. Tetap semangat, mari kembali ke rute!");
+            }
+        }
+
+        function showFeedbackModal(title, body) {
+            // Build absolute container
+            const container = document.createElement("div");
+            container.className = "fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-[110] p-4";
+            container.id = "customFeedbackModal";
+            container.innerHTML = `
+                <div class="bg-slate-800 border border-slate-700 max-w-sm w-full p-6 rounded-2xl shadow-2xl text-center space-y-4">
+                    <div class="w-16 h-16 bg-red-950/30 text-red-500 rounded-full flex items-center justify-center text-2xl mx-auto border border-red-500/20">
+                        <i class="fa-solid fa-heart-crack animate-bounce"></i>
+                    </div>
+                    <h4 class="font-playful text-lg font-bold text-red-400">${title}</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">${body}</p>
+                    <button onclick="dismissFeedbackModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-100 font-bold py-2 rounded-xl text-sm transition">
+                        Kembali ke Rute
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(container);
+        }
+
+        function dismissFeedbackModal() {
+            const modal = document.getElementById("customFeedbackModal");
+            if (modal) modal.remove();
+            goToMap();
+        }
+
+        function triggerGameOver() {
+            // Clear any lingering modals
+            const modal = document.getElementById("customFeedbackModal");
+            if (modal) modal.remove();
+
+            document.getElementById("gameOverScoreText").innerText = `${gameData.score} Poin`;
+            switchScreen("gameOverScreen");
+        }
+
+        function triggerVictory() {
+            clearInterval(gameData.totalTimerInterval);
+            playVictorySound();
+            
+            // Standard Confetti Fanfare
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Calculate Rubrics:
+            // 1. Ketepatan Jawaban (70%): based on score obtained out of total possible non-bonus score (90 points)
+            // But let's calculate exact completed answers. Total levels = 6. Let's weigh completed levels.
+            const completedCount = Object.keys(gameData.completedLevels).length;
+            const accuracyGrade = Math.round((completedCount / 6) * 70);
+
+            // 2. Kecepatan Menjawab (20%): Scale based on total Elapsed Time
+            // Fast: < 90 seconds (Full 20 points). Medium: < 180 seconds (15 points). Slow: 10 points.
+            let speedGrade = 10;
+            if (gameData.totalElapsedTime < 90) {
+                speedGrade = 20;
+            } else if (gameData.totalElapsedTime < 180) {
+                speedGrade = 15;
+            }
+
+            // 3. Menyelesaikan Semua Level (10%): Complete all = 10 points.
+            const completionGrade = completedCount >= 5 ? 10 : 0;
+
+            const finalGradeValue = accuracyGrade + speedGrade + completionGrade;
+
+            // Fill HTML UI Element Rubrics
+            document.getElementById("rubricAccuracy").innerText = `${accuracyGrade} / 70`;
+            document.getElementById("rubricSpeed").innerText = `${speedGrade} / 20`;
+            document.getElementById("rubricCompletion").innerText = `${completionGrade} / 10`;
+            document.getElementById("rubricFinalGrade").innerText = `${finalGradeValue} / 100`;
+
+            // Fill Certificate Element values
+            document.getElementById("certFinalGrade").innerText = `${finalGradeValue} / 100`;
+
+            // Awards Medals Rules
+            const medalArt = document.getElementById("rewardMedalArt");
+            const medalTitle = document.getElementById("rewardMedalTitle");
+            const medalDesc = document.getElementById("rewardMedalDesc");
+            const certMedal = document.getElementById("certMedalEarned");
+
+            if (finalGradeValue >= 80) {
+                medalArt.innerText = "🏆";
+                medalTitle.innerText = "Medali Emas";
+                medalDesc.innerText = "Juara Utama Matematika KPK & FPB!";
+                certMedal.innerText = "Medali Emas (Sangat Memuaskan)";
+            } else if (finalGradeValue >= 60) {
+                medalArt.innerText = "🥈";
+                medalTitle.innerText = "Medali Perak";
+                medalDesc.innerText = "Sangat Baik! Anda menguasai KPK & FPB.";
+                certMedal.innerText = "Medali Perak (Baik)";
+            } else {
+                medalArt.innerText = "⭐";
+                medalTitle.innerText = "Mengulang Permainan";
+                medalDesc.innerText = "Kurang dari 60. Mari ulangi untuk hasil emas!";
+                certMedal.innerText = "Piagam Keberanian Belajar";
+            }
+
+            switchScreen("victoryScreen");
+        }
+
+        /*
+            DYNAMIC VENN DIAGRAM ARITHMETIC UTILITIES (EDUCATIONAL VALUE)
+        */
+        function toggleVennHelper(forceOpen) {
+            const panel = document.getElementById("vennHelperPanel");
+            if (forceOpen === true) {
+                panel.classList.remove("translate-x-full");
+            } else if (forceOpen === false) {
+                panel.classList.add("translate-x-full");
+            } else {
+                panel.classList.toggle("translate-x-full");
+            }
+        }
+
+        // Get prime factors array of a number
+        function getPrimeFactors(num) {
+            let factors = [];
+            let d = 2;
+            while (num > 1) {
+                while (num % d === 0) {
+                    factors.push(d);
+                    num /= d;
+                }
+                d++;
+                if (d * d > num) {
+                    if (num > 1) {
+                        factors.push(num);
+                        break;
+                    }
+                }
+            }
+            return factors;
+        }
+
+        // Calculate and Draw dynamic factors Venn Diagram
+        function calculateVenn() {
+            const valA = parseInt(document.getElementById("vennNumA").value) || 2;
+            const valB = parseInt(document.getElementById("vennNumB").value) || 2;
+
+            const factorsA = getPrimeFactors(valA);
+            const factorsB = getPrimeFactors(valB);
+
+            // Display factor text list
+            document.getElementById("vennFactorAList").innerText = `${factorsA.join(" × ")} (${valA})`;
+            document.getElementById("vennFactorBList").innerText = `${factorsB.join(" × ")} (${valB})`;
+
+            // Calculate Venn sets
+            let common = [];
+            let onlyA = [...factorsA];
+            let onlyB = [...factorsB];
+
+            // Safely filter overlaps for multiple factor matches
+            for (let i = onlyA.length - 1; i >= 0; i--) {
+                const findIdx = onlyB.indexOf(onlyA[i]);
+                if (findIdx !== -1) {
+                    common.push(onlyA[i]);
+                    onlyA.splice(i, 1);
+                    onlyB.splice(findIdx, 1);
+                }
+            }
+
+            // Calculate numerical GCF & LCM
+            const fpbVal = common.reduce((acc, v) => acc * v, 1);
+            // KPK is all combined
+            const kpkVal = [...onlyA, ...common, ...onlyB].reduce((acc, v) => acc * v, 1);
+
+            document.getElementById("vennFpbResult").innerText = fpbVal;
+            document.getElementById("vennFpbFormula").innerText = common.length > 0 ? common.join(" × ") : "1";
+            
+            const kpkList = [...onlyA, ...common, ...onlyB].sort((a,b)=>a-b);
+            document.getElementById("vennKpkResult").innerText = kpkVal;
+            document.getElementById("vennKpkFormula").innerText = kpkList.length > 0 ? kpkList.join(" × ") : "1";
+
+            // Draw interactive SVG factor coordinates inside the circles
+            drawSvgFactors("svgFactorsOnlyA", onlyA, -45); // offset left
+            drawSvgFactors("svgFactorsShared", common, 0); // centered
+            drawSvgFactors("svgFactorsOnlyB", onlyB, 45); // offset right
+        }
+
+        function drawSvgFactors(elementId, factorsList, xOffset) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = "";
+
+            if (factorsList.length === 0) {
+                container.innerHTML = `<text x="${xOffset}" y="5" fill="#64748b" font-size="10" text-anchor="middle" font-style="italic">-</text>`;
+                return;
+            }
+
+            // Stagger factor labels vertically inside standard circle coordinates
+            factorsList.forEach((fact, idx) => {
+                const yShift = (idx - (factorsList.length - 1) / 2) * 20;
+                container.innerHTML += `
+                    <circle cx="${xOffset}" cy="${yShift}" r="11" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5" />
+                    <text x="${xOffset}" y="${yShift + 4}" fill="#e0e7ff" font-size="11" font-weight="extrabold" text-anchor="middle" font-family="monospace">${fact}</text>
+                `;
+            });
+        }
+
+        /*
+            ONLOAD BOOTSTRAPPER
+        */
+        window.onload = function() {
+            calculateVenn(); // Pre-render helper Venn diagrams
+        }
+    </script>
+</body>
+</html>
